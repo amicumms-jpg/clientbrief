@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClientBrief — Collect Client Info in 1 Link</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- Navbar -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-10">
+        <div class="max-w-xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white">CB</div>
+                <span class="font-bold text-lg tracking-tight">ClientBrief</span>
+            </div>
+            <span id="mode-badge" class="text-xs font-medium px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                Creator Mode
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-xl w-full mx-auto px-4 py-8 flex-grow">
+
+        <!-- VIEW 1: FREELANCER CREATOR -->
+        <div id="creator-view" class="space-y-6">
+            <div>
+                <h1 class="text-2xl font-bold text-white">Stop chasing clients on WhatsApp.</h1>
+                <p class="text-slate-400 text-sm mt-1">Select what you need, generate a clean link, and get all client details organized in seconds.</p>
+            </div>
+
+            <!-- Project Name -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Project / Business Name</label>
+                    <input type="text" id="project-name" placeholder="e.g. Website Redesign for Acme" 
+                        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Your WhatsApp Number (with country code)</label>
+                    <input type="tel" id="whatsapp-number" placeholder="e.g. +40712345678" 
+                        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+                    <p class="text-xs text-slate-500 mt-1">Client answers will be sent straight to your WhatsApp formatted cleanly.</p>
+                </div>
+            </div>
+
+            <!-- Checklist Fields -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Select Info Needed From Client</label>
+                
+                <div id="fields-list" class="space-y-2.5">
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700">
+                        <input type="checkbox" value="Company / Billing Details (Name, Tax ID, Address)" checked class="field-checkbox w-4 h-4 accent-indigo-600 rounded">
+                        <span class="text-sm">Company & Billing Details</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700">
+                        <input type="checkbox" value="Brand Colors & Logo Drive/Dropbox Link" checked class="field-checkbox w-4 h-4 accent-indigo-600 rounded">
+                        <span class="text-sm">Brand Colors & Logo Link</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700">
+                        <input type="checkbox" value="Main Copy / Text Content" checked class="field-checkbox w-4 h-4 accent-indigo-600 rounded">
+                        <span class="text-sm">Main Copy / Text Content</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700">
+                        <input type="checkbox" value="Website / Social Media Links" class="field-checkbox w-4 h-4 accent-indigo-600 rounded">
+                        <span class="text-sm">Website & Social Media Links</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700">
+                        <input type="checkbox" value="Target Audience & Competitors" class="field-checkbox w-4 h-4 accent-indigo-600 rounded">
+                        <span class="text-sm">Target Audience & Competitors</span>
+                    </label>
+                </div>
+
+                <!-- Add Custom Question -->
+                <div class="pt-2 flex gap-2">
+                    <input type="text" id="custom-field-input" placeholder="Add custom question..." 
+                        class="flex-grow bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                    <button onclick="addCustomField()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium rounded-lg transition">
+                        + Add
+                    </button>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button onclick="generateLink()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition">
+                Generate Client Link
+            </button>
+
+            <!-- Generated Link Output -->
+            <div id="link-output-box" class="hidden bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase text-emerald-400">Your Client Link is Ready!</span>
+                    <button onclick="previewClientLink()" class="text-xs text-indigo-400 underline">Preview Link</button>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="generated-url" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-300">
+                    <button onclick="copyLink()" id="copy-btn" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg shrink-0">
+                        Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: CLIENT SUBMISSION FORM -->
+        <div id="client-view" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <span class="text-xs font-medium text-indigo-400 uppercase tracking-wider">Client Onboarding Brief</span>
+                <h1 id="client-project-title" class="text-xl font-bold text-white mt-1">Project Details</h1>
+                <p class="text-slate-400 text-sm mt-1">Please fill in the requested details below so we can get started right away.</p>
+            </div>
+
+            <form id="client-form" onsubmit="submitClientBrief(event)" class="space-y-4">
+                <div id="dynamic-questions" class="space-y-4"></div>
+
+                <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl shadow-lg shadow-emerald-600/20 transition">
+                    Send Details via WhatsApp
+                </button>
+                <button type="button" onclick="copyFormattedAnswers()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-medium rounded-xl transition">
+                    Or Copy Answers to Clipboard
+                </button>
+            </form>
+        </div>
+
+    </main>
+
+    <!-- Footer (Viral Loop) -->
+    <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+        <p>Powered by <a href="?" class="text-indigo-400 font-semibold hover:underline">ClientBrief</a> — Collect client info in 1 link.</p>
+    </footer>
+
+    <script>
+        let currentFormData = null;
+
+        // Check URL parameters on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const encodedData = params.get('b');
+            if (encodedData) {
+                try {
+                    const decoded = JSON.parse(decodeURIComponent(atob(encodedData)));
+                    loadClientView(decoded);
+                } catch (e) {
+                    console.error("Invalid brief link", e);
+                }
+            }
+        });
+
+        function addCustomField() {
+            const input = document.getElementById('custom-field-input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const list = document.getElementById('fields-list');
+            const label = document.createElement('label');
+            label.className = "flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700";
+            label.innerHTML = `
+                <input type="checkbox" value="${val.replace(/"/g, '"')}" checked class="field-checkbox w-4 h-4 accent-indigo-600 rounded">
+                <span class="text-sm">${val}</span>
+            `;
+            list.appendChild(label);
+            input.value = '';
+        }
+
+        function generateLink() {
+            const projectName = document.getElementById('project-name').value.trim() || "New Client Project";
+            const whatsapp = document.getElementById('whatsapp-number').value.trim().replace(/[^0-9]/g, '');
+            const checkboxes = document.querySelectorAll('.field-checkbox:checked');
+            
+            const fields = Array.from(checkboxes).map(cb => cb.value);
+            if (fields.length === 0) {
+                alert("Please select at least one field.");
+                return;
+            }
+
+            const payload = { p: projectName, w: whatsapp, f: fields };
+            const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+            const baseUrl = window.location.origin + window.location.pathname;
+            const fullUrl = `${baseUrl}?b=${encoded}`;
+
+            document.getElementById('generated-url').value = fullUrl;
+            document.getElementById('link-output-box').classList.remove('hidden');
+        }
+
+        function copyLink() {
+            const urlInput = document.getElementById('generated-url');
+            urlInput.select();
+            urlInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(urlInput.value);
+            const btn = document.getElementById('copy-btn');
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = "Copy", 2000);
+        }
+
+        function previewClientLink() {
+            const url = document.getElementById('generated-url').value;
+            window.open(url, '_blank');
+        }
+
+        function loadClientView(data) {
+            currentFormData = data;
+            document.getElementById('creator-view').classList.add('hidden');
+            document.getElementById('client-view').classList.remove('hidden');
+            document.getElementById('mode-badge').innerText = "Client Form";
+            document.getElementById('client-project-title').innerText = data.p;
+
+            const container = document.getElementById('dynamic-questions');
+            container.innerHTML = '';
+
+            data.f.forEach((question, index) => {
+                const div = document.createElement('div');
+                div.className = "bg-slate-900 border border-slate-800 rounded-xl p-4";
+                div.innerHTML = `
+                    <label class="block text-sm font-medium text-slate-200 mb-2">${index + 1}. ${question}</label>
+                    <textarea required rows="3" data-question="${question.replace(/"/g, '"')}" 
+                        placeholder="Type your answer here..."
+                        class="client-answer w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"></textarea>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function buildFormattedText() {
+            const answers = document.querySelectorAll('.client-answer');
+            let text = `*CLIENT BRIEF: ${currentFormData.p}*\n\n`;
+            answers.forEach((el, idx) => {
+                const q = el.getAttribute('data-question');
+                const a = el.value.trim() || "N/A";
+                text += `*${idx + 1}. ${q}*\n${a}\n\n`;
+            });
+            return text;
+        }
+
+        function submitClientBrief(e) {
+            e.preventDefault();
+            const message = encodeURIComponent(buildFormattedText());
+            if (currentFormData.w) {
+                window.open(`https://wa.me/${currentFormData.w}?text=${message}`, '_blank');
+            } else {
+                copyFormattedAnswers();
+                alert("Answers copied! Paste them in your chat with the freelancer.");
+            }
+        }
+
+        function copyFormattedAnswers() {
+            const text = buildFormattedText();
+            navigator.clipboard.writeText(text);
+            alert("Formatted answers copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
