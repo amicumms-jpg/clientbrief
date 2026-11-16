@@ -6,7 +6,12 @@
   <title>ClientBrief — Collect Client Details Without Chasing</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans antialiased">
+<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans antialiased pb-12">
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 border border-slate-700 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2">
+    <span id="toastMsg">Notification message</span>
+  </div>
 
   <!-- Navbar -->
   <header class="border-b border-slate-800/80 bg-[#0b101d]/90 backdrop-blur sticky top-0 z-20">
@@ -104,7 +109,7 @@
             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">
               Select Info Needed From Client
             </label>
-            <!-- PRO TEMPLATES BUTTON (Visible if Pro) -->
+            <!-- PRO TEMPLATES CONTROLS -->
             <div id="templatesControl" class="hidden flex gap-2">
               <select id="templateSelect" onchange="loadTemplate()" class="bg-[#090d16] border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1 focus:outline-none">
                 <option value="">📂 Load Template...</option>
@@ -184,6 +189,12 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <!-- PRO HISTORY SECTION (Visible if Pro & has history) -->
+      <div id="historySection" class="hidden mt-6 bg-[#111827] border border-slate-800 rounded-2xl p-5 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">📜 Recent Generated Briefs (Pro)</h3>
+        <div id="historyList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
       </div>
 
       <!-- Pro Banner -->
@@ -281,6 +292,16 @@
   </div>
 
   <script>
+    // --- Toast Notification Helper ---
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
     // --- Gestionare Licență Pro & Funcții Pro ---
     function checkProStatus() {
       const isPro = localStorage.getItem('clientbrief_pro') === 'true';
@@ -288,6 +309,7 @@
       const banner = document.getElementById('proBanner');
       const agencySection = document.getElementById('agencySection');
       const templatesControl = document.getElementById('templatesControl');
+      const historySection = document.getElementById('historySection');
 
       if (isPro) {
         btn.textContent = '✨ Pro Active';
@@ -295,7 +317,9 @@
         if (banner) banner.classList.add('hidden');
         if (agencySection) agencySection.classList.remove('hidden');
         if (templatesControl) templatesControl.classList.remove('hidden');
+        if (historySection) historySection.classList.remove('hidden');
         loadSavedTemplatesDropdown();
+        renderHistory();
       }
     }
 
@@ -310,17 +334,17 @@
     async function verifyAndActivateLicense() {
       const key = document.getElementById('licenseKeyInput').value.trim();
       if (!key) {
-        alert('Please enter a license key.');
+        showToast('⚠️ Please enter a license key.');
         return;
       }
 
       if (key.length > 5) {
         localStorage.setItem('clientbrief_pro', 'true');
-        alert('Pro License activated successfully!');
+        showToast('🎉 Pro License activated successfully!');
         closeLicenseModal();
         checkProStatus();
       } else {
-        alert('Invalid license key. Please check and try again.');
+        showToast('❌ Invalid license key.');
       }
     }
 
@@ -334,7 +358,7 @@
       templates[name] = checked;
       localStorage.setItem('clientbrief_templates', JSON.stringify(templates));
       loadSavedTemplatesDropdown();
-      alert(`Template "${name}" saved successfully!`);
+      showToast(`💾 Template "${name}" saved!`);
     }
 
     function loadSavedTemplatesDropdown() {
@@ -358,11 +382,46 @@
       const fields = templates[name];
       if (!fields) return;
 
-      // Debifa toate și bifează-le pe cele din șablon
       document.querySelectorAll('#fieldsList input[type="checkbox"]').forEach(cb => {
         cb.checked = fields.includes(cb.value);
       });
       select.value = '';
+      showToast(`📂 Loaded template: ${name}`);
+    }
+
+    // --- Istoric Linkuri Pro ---
+    function saveToHistory(projectName, url) {
+      const isPro = localStorage.getItem('clientbrief_pro') === 'true';
+      if (!isPro) return;
+
+      let history = JSON.parse(localStorage.getItem('clientbrief_history') || '[]');
+      history.unshift({ name: projectName, url: url, date: new Date().toLocaleDateString() });
+      if (history.length > 10) history.pop(); // Păstrăm ultimele 10
+      localStorage.setItem('clientbrief_history', JSON.stringify(history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      const history = JSON.parse(localStorage.getItem('clientbrief_history') || '[]');
+      if (history.length === 0) {
+        list.innerHTML = '<p class="text-xs text-slate-500">No recent briefs generated yet.</p>';
+        return;
+      }
+
+      list.innerHTML = '';
+      history.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-2.5 rounded-xl bg-[#090d16] border border-slate-800 text-xs';
+        div.innerHTML = `
+          <div class="truncate mr-2">
+            <span class="font-semibold text-white">${item.name}</span>
+            <span class="text-slate-500 ml-2">${item.date}</span>
+          </div>
+          <button onclick="navigator.clipboard.writeText('${item.url}'); showToast('📋 Link copied to clipboard!');" class="shrink-0 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-indigo-400 rounded-lg">Copy Link</button>
+        `;
+        list.appendChild(div);
+      });
     }
 
     // --- Funcționalități de bază ---
@@ -389,7 +448,7 @@
       const checked = Array.from(document.querySelectorAll('#fieldsList input[type="checkbox"]:checked')).map(cb => cb.value);
 
       if (checked.length === 0) {
-        alert('Please select at least one field.');
+        showToast('⚠️ Please select at least one field.');
         return;
       }
 
@@ -399,6 +458,8 @@
 
       document.getElementById('generatedUrl').value = url;
       document.getElementById('resultBox').classList.remove('hidden');
+      saveToHistory(project, url);
+      showToast('✨ Client link generated successfully!');
     }
 
     function copyLink() {
@@ -407,6 +468,7 @@
       navigator.clipboard.writeText(input.value);
       const btn = document.getElementById('copyBtn');
       btn.textContent = 'Copied!';
+      showToast('📋 Link copied to clipboard!');
       setTimeout(() => btn.textContent = 'Copy', 2000);
     }
 
@@ -424,7 +486,6 @@
         document.getElementById('modeBadge').textContent = 'Client Form';
         document.getElementById('clientProjectTitle').textContent = activePayload.p || 'Project Details';
 
-        // Afișează numele agenției dacă există în payload
         if (activePayload.ag) {
           document.getElementById('clientAgencyLabel').textContent = `Client Onboarding Brief — by ${activePayload.ag}`;
         }
@@ -432,7 +493,7 @@
         const container = document.getElementById('dynamicClientFields');
         container.innerHTML = '';
 
-        (activePayload.f || []).forEach((field, idx) => {
+        (activePayload.f || []).forEach((field) => {
           const wrapper = document.createElement('div');
           wrapper.innerHTML = `
             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
@@ -480,7 +541,7 @@
     function copyFormattedSummary() {
       const text = buildFormattedText();
       navigator.clipboard.writeText(text);
-      alert('Brief copied to clipboard! Paste it directly to your freelancer.');
+      showToast('📋 Brief copied to clipboard!');
     }
 
     // Inițializări la load
