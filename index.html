@@ -58,6 +58,20 @@
       </div>
 
       <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-5 shadow-xl">
+        
+        <!-- PRO AGENCY BRANDING SECTION -->
+        <div id="agencySection" class="hidden p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 space-y-2">
+          <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">
+            ✨ Pro Agency Branding (Shown to Client)
+          </label>
+          <input
+            id="agencyName"
+            type="text"
+            placeholder="e.g. Acme Digital Studio"
+            class="w-full bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+          />
+        </div>
+
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
             Project / Business Name
@@ -86,9 +100,21 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-            Select Info Needed From Client
-          </label>
+          <div class="flex justify-between items-center mb-2">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Select Info Needed From Client
+            </label>
+            <!-- PRO TEMPLATES BUTTON (Visible if Pro) -->
+            <div id="templatesControl" class="hidden flex gap-2">
+              <select id="templateSelect" onchange="loadTemplate()" class="bg-[#090d16] border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1 focus:outline-none">
+                <option value="">📂 Load Template...</option>
+              </select>
+              <button type="button" onclick="saveCurrentTemplate()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition">
+                💾 Save Set
+              </button>
+            </div>
+          </div>
+
           <div id="fieldsList" class="space-y-2">
             <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
               <input type="checkbox" value="Company & Billing Details" checked class="w-4 h-4 accent-indigo-500 rounded" />
@@ -184,7 +210,7 @@
     <!-- CLIENT FILL VIEW -->
     <section id="clientView" class="hidden">
       <div class="mb-6">
-        <span class="inline-block text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-1">
+        <span id="clientAgencyLabel" class="inline-block text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">
           Client Onboarding Brief
         </span>
         <h1 id="clientProjectTitle" class="text-2xl sm:text-3xl font-bold text-white">
@@ -255,16 +281,21 @@
   </div>
 
   <script>
-    // --- Gestionare Licență Pro ---
+    // --- Gestionare Licență Pro & Funcții Pro ---
     function checkProStatus() {
       const isPro = localStorage.getItem('clientbrief_pro') === 'true';
       const btn = document.getElementById('proStatusBtn');
       const banner = document.getElementById('proBanner');
+      const agencySection = document.getElementById('agencySection');
+      const templatesControl = document.getElementById('templatesControl');
 
       if (isPro) {
         btn.textContent = '✨ Pro Active';
-        btn.className = 'text-xs font-medium px-2.5 py-1.5 rounded-lg bg-emerald-950/80 text-emerald-400 border border-emerald-800 transition';
+        btn.className = 'text-xs font-medium px-2.5 py-1.5 rounded-lg bg-emerald-950/85 text-emerald-400 border border-emerald-800 transition';
         if (banner) banner.classList.add('hidden');
+        if (agencySection) agencySection.classList.remove('hidden');
+        if (templatesControl) templatesControl.classList.remove('hidden');
+        loadSavedTemplatesDropdown();
       }
     }
 
@@ -283,8 +314,6 @@
         return;
       }
 
-      // Simulare / Validare prin Whop API (sau activare directă bazată pe formatul cheii)
-      // Poți extinde cu fetch(`https://api.whop.com/v5/sdk/licenses/verify?key=${key}`) dacă e necesar
       if (key.length > 5) {
         localStorage.setItem('clientbrief_pro', 'true');
         alert('Pro License activated successfully!');
@@ -295,7 +324,48 @@
       }
     }
 
-    // --- Funcționalități existente ---
+    // --- Șabloane Salvate (Templates) ---
+    function saveCurrentTemplate() {
+      const name = prompt('Enter a name for this template set (e.g. Web Design Brief):');
+      if (!name) return;
+
+      const checked = Array.from(document.querySelectorAll('#fieldsList input[type="checkbox"]:checked')).map(cb => cb.value);
+      let templates = JSON.parse(localStorage.getItem('clientbrief_templates') || '{}');
+      templates[name] = checked;
+      localStorage.setItem('clientbrief_templates', JSON.stringify(templates));
+      loadSavedTemplatesDropdown();
+      alert(`Template "${name}" saved successfully!`);
+    }
+
+    function loadSavedTemplatesDropdown() {
+      const select = document.getElementById('templateSelect');
+      select.innerHTML = '<option value="">📂 Load Template...</option>';
+      const templates = JSON.parse(localStorage.getItem('clientbrief_templates') || '{}');
+      Object.keys(templates).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
+    }
+
+    function loadTemplate() {
+      const select = document.getElementById('templateSelect');
+      const name = select.value;
+      if (!name) return;
+
+      const templates = JSON.parse(localStorage.getItem('clientbrief_templates') || '{}');
+      const fields = templates[name];
+      if (!fields) return;
+
+      // Debifa toate și bifează-le pe cele din șablon
+      document.querySelectorAll('#fieldsList input[type="checkbox"]').forEach(cb => {
+        cb.checked = fields.includes(cb.value);
+      });
+      select.value = '';
+    }
+
+    // --- Funcționalități de bază ---
     function addCustomField() {
       const input = document.getElementById('customFieldInput');
       const val = input.value.trim();
@@ -315,6 +385,7 @@
     function generateClientLink() {
       const project = document.getElementById('projectName').value.trim() || 'New Project';
       const phone = document.getElementById('whatsappNumber').value.trim();
+      const agency = document.getElementById('agencyName') ? document.getElementById('agencyName').value.trim() : '';
       const checked = Array.from(document.querySelectorAll('#fieldsList input[type="checkbox"]:checked')).map(cb => cb.value);
 
       if (checked.length === 0) {
@@ -322,7 +393,7 @@
         return;
       }
 
-      const payload = { p: project, w: phone, f: checked };
+      const payload = { p: project, w: phone, f: checked, ag: agency };
       const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
       const url = `${window.location.origin}${window.location.pathname}?b=${encoded}`;
 
@@ -352,6 +423,11 @@
         document.getElementById('clientView').classList.remove('hidden');
         document.getElementById('modeBadge').textContent = 'Client Form';
         document.getElementById('clientProjectTitle').textContent = activePayload.p || 'Project Details';
+
+        // Afișează numele agenției dacă există în payload
+        if (activePayload.ag) {
+          document.getElementById('clientAgencyLabel').textContent = `Client Onboarding Brief — by ${activePayload.ag}`;
+        }
 
         const container = document.getElementById('dynamicClientFields');
         container.innerHTML = '';
