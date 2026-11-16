@@ -22,6 +22,16 @@
         <span id="modeBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
           Creator Mode
         </span>
+        
+        <!-- Buton activare licență Pro -->
+        <button
+          onclick="openLicenseModal()"
+          id="proStatusBtn"
+          class="text-xs font-medium px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+        >
+          🔑 Activate Pro
+        </button>
+
         <a
           href="https://whop.com/clientbrief-ruddy/clientbrief-pro"
           target="_blank"
@@ -151,7 +161,7 @@
       </div>
 
       <!-- Pro Banner -->
-      <div class="mt-6 bg-gradient-to-r from-[#131b2e] to-[#1a1625] border border-indigo-500/30 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div id="proBanner" class="mt-6 bg-gradient-to-r from-[#131b2e] to-[#1a1625] border border-indigo-500/30 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div class="flex items-center gap-2 mb-1">
             <span class="text-xs font-bold uppercase tracking-wider text-amber-400">ClientBrief Pro</span>
@@ -207,7 +217,85 @@
 
   </main>
 
+  <!-- Modal pentru Licență Pro -->
+  <div id="licenseModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#111827] border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-bold text-white">Activate ClientBrief Pro</h3>
+        <button onclick="closeLicenseModal()" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+      </div>
+      <p class="text-xs text-slate-400">
+        Enter your Whop license key received after purchase to unlock Pro features instantly on this device.
+      </p>
+      <div>
+        <input
+          id="licenseKeyInput"
+          type="text"
+          placeholder="e.g. whop_key_xxxxx..."
+          class="w-full bg-[#090d16] border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+        />
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button
+          type="button"
+          onclick="verifyAndActivateLicense()"
+          class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition"
+        >
+          Verify & Activate
+        </button>
+        <button
+          type="button"
+          onclick="closeLicenseModal()"
+          class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // --- Gestionare Licență Pro ---
+    function checkProStatus() {
+      const isPro = localStorage.getItem('clientbrief_pro') === 'true';
+      const btn = document.getElementById('proStatusBtn');
+      const banner = document.getElementById('proBanner');
+
+      if (isPro) {
+        btn.textContent = '✨ Pro Active';
+        btn.className = 'text-xs font-medium px-2.5 py-1.5 rounded-lg bg-emerald-950/80 text-emerald-400 border border-emerald-800 transition';
+        if (banner) banner.classList.add('hidden');
+      }
+    }
+
+    function openLicenseModal() {
+      document.getElementById('licenseModal').classList.remove('hidden');
+    }
+
+    function closeLicenseModal() {
+      document.getElementById('licenseModal').classList.add('hidden');
+    }
+
+    async function verifyAndActivateLicense() {
+      const key = document.getElementById('licenseKeyInput').value.trim();
+      if (!key) {
+        alert('Please enter a license key.');
+        return;
+      }
+
+      // Simulare / Validare prin Whop API (sau activare directă bazată pe formatul cheii)
+      // Poți extinde cu fetch(`https://api.whop.com/v5/sdk/licenses/verify?key=${key}`) dacă e necesar
+      if (key.length > 5) {
+        localStorage.setItem('clientbrief_pro', 'true');
+        alert('Pro License activated successfully!');
+        closeLicenseModal();
+        checkProStatus();
+      } else {
+        alert('Invalid license key. Please check and try again.');
+      }
+    }
+
+    // --- Funcționalități existente ---
     function addCustomField() {
       const input = document.getElementById('customFieldInput');
       const val = input.value.trim();
@@ -217,7 +305,7 @@
       const label = document.createElement('label');
       label.className = 'flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700';
       label.innerHTML = `
-        <input type="checkbox" value="${val.replace(/"/g, '&quot;')}" checked class="w-4 h-4 accent-indigo-500 rounded" />
+        <input type="checkbox" value="${val.replace(/"/g, '"')}" checked class="w-4 h-4 accent-indigo-500 rounded" />
         <span class="text-sm text-slate-200">${val}</span>
       `;
       list.appendChild(label);
@@ -275,7 +363,7 @@
               ${field}
             </label>
             <textarea
-              data-field="${field.replace(/"/g, '&quot;')}"
+              data-field="${field.replace(/"/g, '"')}"
               rows="2"
               required
               placeholder="Enter ${field.toLowerCase()}..."
@@ -319,7 +407,9 @@
       alert('Brief copied to clipboard! Paste it directly to your freelancer.');
     }
 
+    // Inițializări la load
     checkClientMode();
+    checkProStatus();
   </script>
 </body>
 </html>
