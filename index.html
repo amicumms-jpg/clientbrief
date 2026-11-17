@@ -6,261 +6,279 @@
   <title>ClientBrief — Collect Client Details Without Chasing</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans antialiased pb-12">
+<body class="bg-[#090d16] text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between pb-6">
 
   <!-- Toast Notification Container -->
   <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 border border-slate-700 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2">
     <span id="toastMsg">Notification message</span>
   </div>
 
-  <!-- Navbar -->
-  <header class="border-b border-slate-800/80 bg-[#0b101d]/90 backdrop-blur sticky top-0 z-20">
-    <div class="max-w-3xl mx-auto px-4 py-3.5 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white text-sm shadow-md shadow-indigo-600/30">
-          CB
-        </div>
-        <span class="font-semibold tracking-tight text-slate-100">ClientBrief</span>
-      </div>
-
-      <div class="flex items-center gap-2.5">
-        <span id="modeBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-          Creator Mode
-        </span>
-        
-        <!-- Buton activare licență Pro -->
-        <button
-          onclick="openLicenseModal()"
-          id="proStatusBtn"
-          class="text-xs font-medium px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
-        >
-          🔑 Activate Pro
-        </button>
-
-        <a
-          href="https://whop.com/clientbrief-ruddy/clientbrief-pro"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-xs font-medium px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-semibold shadow-sm transition"
-        >
-          ⚡ Upgrade Pro
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-2xl mx-auto px-4 py-8">
-
-    <!-- CREATOR VIEW -->
-    <section id="creatorView">
-      <div class="mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
-          Stop chasing clients on WhatsApp.
-        </h1>
-        <p class="text-slate-400 text-sm sm:text-base">
-          Select what you need, generate a clean link, and get all client details and asset links organized in seconds.
-        </p>
-      </div>
-
-      <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-5 shadow-xl">
-        
-        <!-- PRO AGENCY BRANDING SECTION -->
-        <div id="agencySection" class="hidden p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 space-y-2">
-          <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">
-            ✨ Pro Agency Branding (Shown to Client)
-          </label>
-          <input
-            id="agencyName"
-            type="text"
-            placeholder="e.g. Acme Digital Studio"
-            class="w-full bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-          />
+  <div>
+    <!-- Navbar -->
+    <header class="border-b border-slate-800/80 bg-[#0b101d]/90 backdrop-blur sticky top-0 z-20">
+      <div class="max-w-3xl mx-auto px-4 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white text-sm shadow-md shadow-indigo-600/30">
+            CB
+          </div>
+          <span class="font-semibold tracking-tight text-slate-100">ClientBrief</span>
         </div>
 
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-            Project / Business Name
-          </label>
-          <input
-            id="projectName"
-            type="text"
-            placeholder="e.g. Website Redesign for Acme"
-            class="w-full bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-          />
-        </div>
+        <div class="flex items-center gap-2.5">
+          <span id="modeBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+            Creator Mode
+          </span>
+          
+          <!-- Buton activare licență Pro -->
+          <button
+            onclick="openLicenseModal()"
+            id="proStatusBtn"
+            class="text-xs font-medium px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+          >
+            🔑 Activate Pro
+          </button>
 
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-            Your WhatsApp Number (with country code)
-          </label>
-          <input
-            id="whatsappNumber"
-            type="tel"
-            placeholder="e.g. +40712345678"
-            class="w-full bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-          />
-          <p class="text-xs text-slate-500 mt-1">
-            Client answers will be sent straight to your WhatsApp formatted cleanly.
+          <a
+            href="https://whop.com/clientbrief-ruddy/clientbrief-pro"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs font-medium px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-semibold shadow-sm transition"
+          >
+            ⚡ Upgrade Pro
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-2xl mx-auto px-4 py-8">
+
+      <!-- CREATOR VIEW -->
+      <section id="creatorView">
+        <div class="mb-6">
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
+            Stop chasing clients on WhatsApp.
+          </h1>
+          <p class="text-slate-400 text-sm sm:text-base">
+            Select what you need, generate a clean link, and get all client details and asset links organized in seconds.
           </p>
         </div>
 
-        <div>
-          <div class="flex justify-between items-center mb-2">
-            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Select Info Needed From Client
+        <div class="bg-[#111827] border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-5 shadow-xl">
+          
+          <!-- PRO AGENCY BRANDING SECTION -->
+          <div id="agencySection" class="hidden p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">
+              ✨ Pro Agency Branding (Shown to Client)
             </label>
-            <!-- PRO TEMPLATES CONTROLS -->
-            <div id="templatesControl" class="hidden flex gap-2">
-              <select id="templateSelect" onchange="loadTemplate()" class="bg-[#090d16] border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1 focus:outline-none">
-                <option value="">📂 Load Template...</option>
-              </select>
-              <button type="button" onclick="saveCurrentTemplate()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition">
-                💾 Save Set
+            <input
+              id="agencyName"
+              type="text"
+              placeholder="e.g. Acme Digital Studio"
+              class="w-full bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+              Project / Business Name
+            </label>
+            <input
+              id="projectName"
+              type="text"
+              placeholder="e.g. Website Redesign for Acme"
+              class="w-full bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+              Your WhatsApp Number (with country code)
+            </label>
+            <input
+              id="whatsappNumber"
+              type="tel"
+              placeholder="e.g. +40712345678"
+              class="w-full bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            />
+            <p class="text-xs text-slate-500 mt-1">
+              Client answers will be sent straight to your WhatsApp formatted cleanly.
+            </p>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Select Info Needed From Client
+              </label>
+              <!-- PRO TEMPLATES CONTROLS -->
+              <div id="templatesControl" class="hidden flex gap-2">
+                <select id="templateSelect" onchange="loadTemplate()" class="bg-[#090d16] border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1 focus:outline-none">
+                  <option value="">📂 Load Template...</option>
+                </select>
+                <button type="button" onclick="saveCurrentTemplate()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition">
+                  💾 Save Set
+                </button>
+              </div>
+            </div>
+
+            <div id="fieldsList" class="space-y-2">
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
+                <input type="checkbox" value="Company & Billing Details" checked class="w-4 h-4 accent-indigo-500 rounded" />
+                <span class="text-sm text-slate-200">Company & Billing Details</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
+                <input type="checkbox" value="Brand Colors & Logo Link" checked class="w-4 h-4 accent-indigo-500 rounded" />
+                <span class="text-sm text-slate-200">Brand Colors & Logo Link</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
+                <input type="checkbox" value="Google Drive / Dropbox Folder Link (Assets & Logos)" checked class="w-4 h-4 accent-indigo-500 rounded" />
+                <span class="text-sm text-slate-200">Google Drive / Dropbox Folder Link (Assets & Logos)</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
+                <input type="checkbox" value="Main Copy / Text Content" class="w-4 h-4 accent-indigo-500 rounded" />
+                <span class="text-sm text-slate-200">Main Copy / Text Content</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
+                <input type="checkbox" value="Target Audience & Competitors" class="w-4 h-4 accent-indigo-500 rounded" />
+                <span class="text-sm text-slate-200">Target Audience & Competitors</span>
+              </label>
+            </div>
+
+            <!-- Custom Field Input -->
+            <div class="flex gap-2 mt-3">
+              <input
+                id="customFieldInput"
+                type="text"
+                placeholder="Add custom question..."
+                class="flex-1 bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              />
+              <button
+                type="button"
+                onclick="addCustomField()"
+                class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition"
+              >
+                + Add
               </button>
             </div>
           </div>
 
-          <div id="fieldsList" class="space-y-2">
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
-              <input type="checkbox" value="Company & Billing Details" checked class="w-4 h-4 accent-indigo-500 rounded" />
-              <span class="text-sm text-slate-200">Company & Billing Details</span>
-            </label>
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
-              <input type="checkbox" value="Brand Colors & Logo Link" checked class="w-4 h-4 accent-indigo-500 rounded" />
-              <span class="text-sm text-slate-200">Brand Colors & Logo Link</span>
-            </label>
-            <!-- Adăugat ca opțiune standard sau Pro -->
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
-              <input type="checkbox" value="Google Drive / Dropbox Folder Link (Assets & Logos)" checked class="w-4 h-4 accent-indigo-500 rounded" />
-              <span class="text-sm text-slate-200">Google Drive / Dropbox Folder Link (Assets & Logos)</span>
-            </label>
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
-              <input type="checkbox" value="Main Copy / Text Content" class="w-4 h-4 accent-indigo-500 rounded" />
-              <span class="text-sm text-slate-200">Main Copy / Text Content</span>
-            </label>
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
-              <input type="checkbox" value="Target Audience & Competitors" class="w-4 h-4 accent-indigo-500 rounded" />
-              <span class="text-sm text-slate-200">Target Audience & Competitors</span>
-            </label>
-          </div>
+          <button
+            type="button"
+            onclick="generateClientLink()"
+            class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/25 transition"
+          >
+            Generate Client Link
+          </button>
 
-          <!-- Custom Field Input -->
-          <div class="flex gap-2 mt-3">
-            <input
-              id="customFieldInput"
-              type="text"
-              placeholder="Add custom question..."
-              class="flex-1 bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-            />
-            <button
-              type="button"
-              onclick="addCustomField()"
-              class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition"
-            >
-              + Add
-            </button>
+          <!-- Generated Link Box -->
+          <div id="resultBox" class="hidden pt-2 border-t border-slate-800 space-y-2.5">
+            <p class="text-xs font-semibold text-emerald-400">✓ Your client link is ready:</p>
+            <div class="flex gap-2">
+              <input
+                id="generatedUrl"
+                type="text"
+                readonly
+                class="flex-1 bg-[#090d16] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 select-all"
+              />
+              <button
+                type="button"
+                onclick="copyLink()"
+                id="copyBtn"
+                class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition"
+              >
+                Copy
+              </button>
+            </div>
           </div>
         </div>
 
-        <button
-          type="button"
-          onclick="generateClientLink()"
-          class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/25 transition"
-        >
-          Generate Client Link
-        </button>
-
-        <!-- Generated Link Box -->
-        <div id="resultBox" class="hidden pt-2 border-t border-slate-800 space-y-2.5">
-          <p class="text-xs font-semibold text-emerald-400">✓ Your client link is ready:</p>
-          <div class="flex gap-2">
-            <input
-              id="generatedUrl"
-              type="text"
-              readonly
-              class="flex-1 bg-[#090d16] border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 select-all"
-            />
-            <button
-              type="button"
-              onclick="copyLink()"
-              id="copyBtn"
-              class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition"
-            >
-              Copy
-            </button>
-          </div>
+        <!-- PRO HISTORY SECTION -->
+        <div id="historySection" class="hidden mt-6 bg-[#111827] border border-slate-800 rounded-2xl p-5 space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">📜 Recent Generated Briefs (Pro)</h3>
+          <div id="historyList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
         </div>
-      </div>
 
-      <!-- PRO HISTORY SECTION -->
-      <div id="historySection" class="hidden mt-6 bg-[#111827] border border-slate-800 rounded-2xl p-5 space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">📜 Recent Generated Briefs (Pro)</h3>
-        <div id="historyList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
-      </div>
-
-      <!-- Pro Banner -->
-      <div id="proBanner" class="mt-6 bg-gradient-to-r from-[#131b2e] to-[#1a1625] border border-indigo-500/30 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">ClientBrief Pro</span>
+        <!-- Pro Banner -->
+        <div id="proBanner" class="mt-6 bg-gradient-to-r from-[#131b2e] to-[#1a1625] border border-indigo-500/30 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-400">ClientBrief Pro</span>
+            </div>
+            <p class="text-sm text-slate-300">
+              Unlock custom agency branding, saved client templates & unlimited brief links.
+            </p>
           </div>
-          <p class="text-sm text-slate-300">
-            Unlock custom agency branding, saved client templates & unlimited brief links.
+          <a
+            href="https://whop.com/clientbrief-ruddy/clientbrief-pro"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="shrink-0 px-4 py-2.5 rounded-xl bg-white text-slate-950 hover:bg-slate-200 text-xs font-bold transition"
+          >
+            Get Pro →
+          </a>
+        </div>
+      </section>
+
+      <!-- CLIENT FILL VIEW -->
+      <section id="clientView" class="hidden">
+        <div class="mb-6">
+          <span id="clientAgencyLabel" class="inline-block text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">
+            Client Onboarding Brief
+          </span>
+          <h1 id="clientProjectTitle" class="text-2xl sm:text-3xl font-bold text-white">
+            Project Details
+          </h1>
+          <p class="text-slate-400 text-sm mt-1">
+            Please fill out the details below so we can get started right away.
           </p>
         </div>
-        <a
-          href="https://whop.com/clientbrief-ruddy/clientbrief-pro"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="shrink-0 px-4 py-2.5 rounded-xl bg-white text-slate-950 hover:bg-slate-200 text-xs font-bold transition"
-        >
-          Get Pro →
-        </a>
+
+        <form id="clientForm" onsubmit="submitClientBrief(event)" class="bg-[#111827] border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl">
+          <div id="dynamicClientFields" class="space-y-4"></div>
+
+          <button
+            type="submit"
+            class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-lg shadow-emerald-600/25 transition mt-2"
+          >
+            Send Details via WhatsApp
+          </button>
+
+          <button
+            type="button"
+            onclick="copyFormattedSummary()"
+            class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs border border-slate-700 transition"
+          >
+            Or Copy Formatted Text
+          </button>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Professional Footer -->
+  <footer class="mt-12 border-t border-slate-800/80 pt-6 pb-2">
+    <div class="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-3">
+        <button onclick="openModal('guideModal')" class="hover:text-slate-300 transition">How it works</button>
+        <span>•</span>
+        <button onclick="openModal('termsModal')" class="hover:text-slate-300 transition">Terms & Conditions</button>
+        <span>•</span>
+        <a href="mailto:contact@nexusaistudio.ro" class="hover:text-slate-300 transition">Support</a>
       </div>
-    </section>
-
-    <!-- CLIENT FILL VIEW -->
-    <section id="clientView" class="hidden">
-      <div class="mb-6">
-        <span id="clientAgencyLabel" class="inline-block text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">
-          Client Onboarding Brief
-        </span>
-        <h1 id="clientProjectTitle" class="text-2xl sm:text-3xl font-bold text-white">
-          Project Details
-        </h1>
-        <p class="text-slate-400 text-sm mt-1">
-          Please fill out the details below so we can get started right away.
-        </p>
+      <div>
+        <span>Powered by </span>
+        <a href="https://nexusaistudio.ro" target="_blank" rel="noopener noreferrer" class="text-indigo-400 font-medium hover:underline">nexusaistudio.ro</a>
       </div>
-
-      <form id="clientForm" onsubmit="submitClientBrief(event)" class="bg-[#111827] border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl">
-        <div id="dynamicClientFields" class="space-y-4"></div>
-
-        <button
-          type="submit"
-          class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-lg shadow-emerald-600/25 transition mt-2"
-        >
-          Send Details via WhatsApp
-        </button>
-
-        <button
-          type="button"
-          onclick="copyFormattedSummary()"
-          class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs border border-slate-700 transition"
-        >
-          Or Copy Formatted Text
-        </button>
-      </form>
-    </section>
-
-  </main>
+    </div>
+  </footer>
 
   <!-- Modal pentru Licență Pro -->
   <div id="licenseModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-[#111827] border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
       <div class="flex justify-between items-center">
         <h3 class="text-lg font-bold text-white">Activate ClientBrief Pro</h3>
-        <button onclick="closeLicenseModal()" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+        <button onclick="closeModal('licenseModal')" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
       </div>
       <p class="text-xs text-slate-400">
         Enter your Whop license key received after purchase to unlock Pro features instantly on this device.
@@ -283,11 +301,49 @@
         </button>
         <button
           type="button"
-          onclick="closeLicenseModal()"
+          onclick="closeModal('licenseModal')"
           class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition"
         >
           Cancel
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Manual de Utilizare (How it works) -->
+  <div id="guideModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#111827] border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-bold text-white">📖 How ClientBrief Works</h3>
+        <button onclick="closeModal('guideModal')" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+      </div>
+      <div class="text-xs text-slate-300 space-y-3 leading-relaxed">
+        <p><strong class="text-white">1. Create a Brief:</strong> Select the information you need from your client (company details, brand colors, asset folders) and enter your WhatsApp number.</p>
+        <p><strong class="text-white">2. Share the Link:</strong> Generate a clean, custom link instantly and send it to your client via email, chat, or DM.</p>
+        <p><strong class="text-white">3. Client Fills It Out:</strong> Your client opens the link on mobile or desktop, fills in the requested fields, and attaches public folder links.</p>
+        <p><strong class="text-white">4. Direct to WhatsApp:</strong> With one click, all details are neatly formatted and sent straight into your WhatsApp chat. No more chasing!</p>
+      </div>
+      <div class="pt-2">
+        <button onclick="closeModal('guideModal')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Termeni și Condiții -->
+  <div id="termsModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#111827] border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-bold text-white">📜 Terms & Conditions</h3>
+        <button onclick="closeModal('termsModal')" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+      </div>
+      <div class="text-xs text-slate-300 space-y-3 leading-relaxed">
+        <p><strong class="text-white">Acceptance of Terms:</strong> By accessing and using ClientBrief (provided via nexusaistudio.ro), you agree to comply with these terms.</p>
+        <p><strong class="text-white">Data Privacy:</strong> ClientBrief operates client-side. Brief data and templates are stored locally in your browser storage. We do not store or sell your client submissions.</p>
+        <p><strong class="text-white">Pro Licenses:</strong> Pro licenses are managed securely via Whop. License keys grant access to features on supported devices according to your purchase tier.</p>
+        <p><strong class="text-white">Contact & Support:</strong> For any questions, issues, or assistance, reach out directly at <a href="mailto:contact@nexusaistudio.ro" class="text-indigo-400 underline">contact@nexusaistudio.ro</a>.</p>
+      </div>
+      <div class="pt-2">
+        <button onclick="closeModal('termsModal')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition">Close</button>
       </div>
     </div>
   </div>
@@ -301,6 +357,19 @@
       setTimeout(() => {
         toast.classList.add('translate-y-20', 'opacity-0');
       }, 3000);
+    }
+
+    // --- Modal Helpers ---
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function openLicenseModal() {
+      openModal('licenseModal');
     }
 
     // --- Gestionare Licență Pro & Funcții Pro ---
@@ -324,14 +393,6 @@
       }
     }
 
-    function openLicenseModal() {
-      document.getElementById('licenseModal').classList.remove('hidden');
-    }
-
-    function closeLicenseModal() {
-      document.getElementById('licenseModal').classList.add('hidden');
-    }
-
     async function verifyAndActivateLicense() {
       const key = document.getElementById('licenseKeyInput').value.trim();
       if (!key) {
@@ -342,7 +403,7 @@
       if (key.length > 5) {
         localStorage.setItem('clientbrief_pro', 'true');
         showToast('🎉 Pro License activated successfully!');
-        closeLicenseModal();
+        closeModal('licenseModal');
         checkProStatus();
       } else {
         showToast('❌ Invalid license key.');
@@ -497,7 +558,6 @@
         (activePayload.f || []).forEach((field) => {
           const wrapper = document.createElement('div');
           
-          // Verificăm dacă câmpul este legat de Google Drive / Folder pentru a adăuga un mic sfat util clientului
           const isFolderField = field.toLowerCase().includes('folder') || field.toLowerCase().includes('drive');
           const helperText = isFolderField 
             ? `<p class="text-[11px] text-amber-400/90 mt-1">💡 Tip: Make sure the folder link is set to "Anyone with the link can view" so we can access your logos/assets.</p>` 
