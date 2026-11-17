@@ -58,7 +58,7 @@
           Stop chasing clients on WhatsApp.
         </h1>
         <p class="text-slate-400 text-sm sm:text-base">
-          Select what you need, generate a clean link, and get all client details organized in seconds.
+          Select what you need, generate a clean link, and get all client details and asset links organized in seconds.
         </p>
       </div>
 
@@ -129,13 +129,14 @@
               <input type="checkbox" value="Brand Colors & Logo Link" checked class="w-4 h-4 accent-indigo-500 rounded" />
               <span class="text-sm text-slate-200">Brand Colors & Logo Link</span>
             </label>
+            <!-- Adăugat ca opțiune standard sau Pro -->
             <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
-              <input type="checkbox" value="Main Copy / Text Content" checked class="w-4 h-4 accent-indigo-500 rounded" />
-              <span class="text-sm text-slate-200">Main Copy / Text Content</span>
+              <input type="checkbox" value="Google Drive / Dropbox Folder Link (Assets & Logos)" checked class="w-4 h-4 accent-indigo-500 rounded" />
+              <span class="text-sm text-slate-200">Google Drive / Dropbox Folder Link (Assets & Logos)</span>
             </label>
             <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
-              <input type="checkbox" value="Website & Social Media Links" class="w-4 h-4 accent-indigo-500 rounded" />
-              <span class="text-sm text-slate-200">Website & Social Media Links</span>
+              <input type="checkbox" value="Main Copy / Text Content" class="w-4 h-4 accent-indigo-500 rounded" />
+              <span class="text-sm text-slate-200">Main Copy / Text Content</span>
             </label>
             <label class="flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700">
               <input type="checkbox" value="Target Audience & Competitors" class="w-4 h-4 accent-indigo-500 rounded" />
@@ -191,7 +192,7 @@
         </div>
       </div>
 
-      <!-- PRO HISTORY SECTION (Visible if Pro & has history) -->
+      <!-- PRO HISTORY SECTION -->
       <div id="historySection" class="hidden mt-6 bg-[#111827] border border-slate-800 rounded-2xl p-5 space-y-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">📜 Recent Generated Briefs (Pro)</h3>
         <div id="historyList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
@@ -396,7 +397,7 @@
 
       let history = JSON.parse(localStorage.getItem('clientbrief_history') || '[]');
       history.unshift({ name: projectName, url: url, date: new Date().toLocaleDateString() });
-      if (history.length > 10) history.pop(); // Păstrăm ultimele 10
+      if (history.length > 10) history.pop();
       localStorage.setItem('clientbrief_history', JSON.stringify(history));
       renderHistory();
     }
@@ -434,7 +435,7 @@
       const label = document.createElement('label');
       label.className = 'flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700';
       label.innerHTML = `
-        <input type="checkbox" value="${val.replace(/"/g, '"')}" checked class="w-4 h-4 accent-indigo-500 rounded" />
+        <input type="checkbox" value="${val.replace(/"/g, '&quot;')}" checked class="w-4 h-4 accent-indigo-500 rounded" />
         <span class="text-sm text-slate-200">${val}</span>
       `;
       list.appendChild(label);
@@ -495,17 +496,25 @@
 
         (activePayload.f || []).forEach((field) => {
           const wrapper = document.createElement('div');
+          
+          // Verificăm dacă câmpul este legat de Google Drive / Folder pentru a adăuga un mic sfat util clientului
+          const isFolderField = field.toLowerCase().includes('folder') || field.toLowerCase().includes('drive');
+          const helperText = isFolderField 
+            ? `<p class="text-[11px] text-amber-400/90 mt-1">💡 Tip: Make sure the folder link is set to "Anyone with the link can view" so we can access your logos/assets.</p>` 
+            : '';
+
           wrapper.innerHTML = `
             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
               ${field}
             </label>
             <textarea
-              data-field="${field.replace(/"/g, '"')}"
-              rows="2"
+              data-field="${field.replace(/"/g, '&quot;')}"
+              rows="${isFolderField ? '1' : '2'}"
               required
-              placeholder="Enter ${field.toLowerCase()}..."
+              placeholder="${isFolderField ? 'Paste public Google Drive / Dropbox link here...' : 'Enter ' + field.toLowerCase() + '...'}"
               class="w-full bg-[#090d16] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
             ></textarea>
+            ${helperText}
           `;
           container.appendChild(wrapper);
         });
