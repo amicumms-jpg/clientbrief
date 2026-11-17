@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ClientBrief — Collect Client Details Without Chasing</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Tag Manager / Analytics -->
+  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-KRB26TKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+  </script>
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between pb-6">
 
@@ -496,7 +505,7 @@
       const label = document.createElement('label');
       label.className = 'flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700';
       label.innerHTML = `
-        <input type="checkbox" value="${val.replace(/"/g, '&quot;')}" checked class="w-4 h-4 accent-indigo-500 rounded" />
+        <input type="checkbox" value="${val.replace(/"/g, '"')}" checked class="w-4 h-4 accent-indigo-500 rounded" />
         <span class="text-sm text-slate-200">${val}</span>
       `;
       list.appendChild(label);
@@ -522,6 +531,12 @@
       document.getElementById('resultBox').classList.remove('hidden');
       saveToHistory(project, url);
       showToast('✨ Client link generated successfully!');
+
+      // Trimite eveniment în Google Tag Manager / Analytics
+      window.dataLayer.push({
+        event: 'generate_brief_link',
+        fields_count: checked.length
+      });
     }
 
     function copyLink() {
@@ -568,7 +583,7 @@
               ${field}
             </label>
             <textarea
-              data-field="${field.replace(/"/g, '&quot;')}"
+              data-field="${field.replace(/"/g, '"')}"
               rows="${isFolderField ? '1' : '2'}"
               required
               placeholder="${isFolderField ? 'Paste public Google Drive / Dropbox link here...' : 'Enter ' + field.toLowerCase() + '...'}"
@@ -598,6 +613,12 @@
       e.preventDefault();
       const text = buildFormattedText();
       const cleanPhone = (activePayload.w || '').replace(/[^0-9]/g, '');
+
+      // Trimite eveniment în Google Tag Manager / Analytics
+      window.dataLayer.push({
+        event: 'submit_client_brief',
+        method: cleanPhone ? 'whatsapp' : 'clipboard'
+      });
 
       if (cleanPhone) {
         const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
