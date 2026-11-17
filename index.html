@@ -282,16 +282,17 @@
     </div>
   </footer>
 
-  <!-- Modal pentru Licență Pro -->
+  <!-- Modal pentru Licență Pro (Cu ghidaj de la Whop) -->
   <div id="licenseModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-[#111827] border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
       <div class="flex justify-between items-center">
-        <h3 class="text-lg font-bold text-white">Activate ClientBrief Pro</h3>
+        <h3 class="text-lg font-bold text-white">🔑 Activate ClientBrief Pro</h3>
         <button onclick="closeModal('licenseModal')" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
       </div>
-      <p class="text-xs text-slate-400">
-        Enter your Whop license key received after purchase to unlock Pro features instantly on this device.
-      </p>
+      <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs space-y-1">
+        <p class="font-semibold">💡 How to get your key:</p>
+        <p>After purchasing on Whop, check your email or your Whop hub account to copy your license key, then paste it below.</p>
+      </div>
       <div>
         <input
           id="licenseKeyInput"
@@ -419,9 +420,33 @@
       }
     }
 
-    // --- Șabloane Salvate (Templates) ---
+    // --- Șabloane Predefinite (Built-in Pro Templates) & Salvate ---
+    const defaultTemplates = {
+      "🌐 Web Design Brief": [
+        "Company & Billing Details",
+        "Brand Colors & Logo Link",
+        "Google Drive / Dropbox Folder Link (Assets & Logos)",
+        "Main Copy / Text Content",
+        "Target Audience & Competitors"
+      ],
+      "📱 Social Media Management": [
+        "Brand Guidelines & Tone of Voice",
+        "Social Media Accounts & Passwords / Access",
+        "Google Drive / Dropbox Folder Link (Visual Assets & Videos)",
+        "Posting Schedule & Key Pillars",
+        "Competitor Pages & Hashtag References"
+      ],
+      "🎬 Video Production Brief": [
+        "Project Goal & Target Platform (YouTube, TikTok, etc.)",
+        "Raw Footages / Drive Folder Link",
+        "Editing Style & References (YouTube links)",
+        "Brand Fonts, Watermark & Logo Assets",
+        "Music & Voiceover Preferences"
+      ]
+    };
+
     function saveCurrentTemplate() {
-      const name = prompt('Enter a name for this template set (e.g. Web Design Brief):');
+      const name = prompt('Enter a name for this template set:');
       if (!name) return;
 
       const checked = Array.from(document.querySelectorAll('#fieldsList input[type="checkbox"]:checked')).map(cb => cb.value);
@@ -435,8 +460,11 @@
     function loadSavedTemplatesDropdown() {
       const select = document.getElementById('templateSelect');
       select.innerHTML = '<option value="">📂 Load Template...</option>';
-      const templates = JSON.parse(localStorage.getItem('clientbrief_templates') || '{}');
-      Object.keys(templates).forEach(name => {
+      
+      // Încărcăm șabloanele predefinite + cele salvate de utilizator
+      let allTemplates = { ...defaultTemplates, ...(JSON.parse(localStorage.getItem('clientbrief_templates') || '{}')) };
+
+      Object.keys(allTemplates).forEach(name => {
         const opt = document.createElement('option');
         opt.value = name;
         opt.textContent = name;
@@ -449,13 +477,24 @@
       const name = select.value;
       if (!name) return;
 
-      const templates = JSON.parse(localStorage.getItem('clientbrief_templates') || '{}');
-      const fields = templates[name];
+      let allTemplates = { ...defaultTemplates, ...(JSON.parse(localStorage.getItem('clientbrief_templates') || '{}')) };
+      const fields = allTemplates[name];
       if (!fields) return;
 
-      document.querySelectorAll('#fieldsList input[type="checkbox"]').forEach(cb => {
-        cb.checked = fields.includes(cb.value);
+      // Resetăm toate checkboxurile existente sau le bifăm pe cele din șablon
+      const list = document.getElementById('fieldsList');
+      list.innerHTML = '';
+
+      fields.forEach(field => {
+        const label = document.createElement('label');
+        label.className = 'flex items-center gap-3 p-3 rounded-xl bg-[#090d16] border border-slate-800 cursor-pointer hover:border-slate-700';
+        label.innerHTML = `
+          <input type="checkbox" value="${field.replace(/"/g, '"')}" checked class="w-4 h-4 accent-indigo-500 rounded" />
+          <span class="text-sm text-slate-200">${field}</span>
+        `;
+        list.appendChild(label);
       });
+
       select.value = '';
       showToast(`📂 Loaded template: ${name}`);
     }
